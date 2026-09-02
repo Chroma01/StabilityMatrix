@@ -5,6 +5,12 @@ All notable changes to Stability Matrix will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html).
 
+## v2.16.4
+### Fixed
+- Installing a package into a folder that already contains files — like an existing ComfyUI installation placed in `Data\Packages` to be imported — now shows the folder's total size and file count and requires explicit confirmation, instead of silently deleting everything in it; this includes the first-run one-click installer ([#1733](https://github.com/LykosAI/StabilityMatrix/issues/1733))
+- Turning off shared model folders no longer tries to delete real directories at the link locations — only links created by Stability Matrix are removed, so the model folders of an imported package are never touched ([#1733](https://github.com/LykosAI/StabilityMatrix/issues/1733))
+- The package uninstall confirmation now correctly lists models/checkpoints among the items that will be deleted for packages using config-based model sharing (ComfyUI's default) — previously it implied they were safe — and shows the package folder's total size
+
 ## v2.16.3
 ### Added
 #### New Feature: 🔀 CivitAI Workflow Browsing
