@@ -199,7 +199,10 @@ public class AiToolkit(
         npmProcess = null;
     }
 
-    private ImmutableDictionary<string, string> GetEnvVars(ImmutableDictionary<string, string> env, PyVersion pythonVersion)
+    private ImmutableDictionary<string, string> GetEnvVars(
+        ImmutableDictionary<string, string> env,
+        PyVersion pythonVersion
+    )
     {
         // Keep distutils importable for setuptools-based builds and training jobs. Must be
         // "local" (setuptools' bundled copy): any other value falls back to stdlib distutils,
