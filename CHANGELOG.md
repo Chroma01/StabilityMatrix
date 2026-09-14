@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 ### Changed
 - **Windows ROCm** PyTorch installs now come from AMD's new permanent ROCm 10 package repositories, avoiding the `CUDA error: invalid argument` / `hipErrorInvalidValue` failures reported with the ROCm 7.14.1 builds — packages already on 7.14.1 need a reinstall, or an update that also upgrades PyTorch (like ComfyUI's) - thanks to @NeuralFault!
 ### Fixed
+<<<<<<< HEAD
+=======
+- Fixed Wan2GP v13's **Deepy** panel repeatedly showing **Connection to server lost** and logging `issubclass() arg 1 must be a class` — Stability Matrix's console logging wrapper now preserves Gradio's exception class ([Wan2GP #2298](https://github.com/deepbeepmeep/Wan2GP/issues/2298))
+- Fixed the Model Browser's **Base Model** filter being lost when using **Next Model** / **Previous Model** or refreshing a model's details ([#1436](https://github.com/LykosAI/StabilityMatrix/issues/1436))
+- Fixed **Hide Early Access Models** still showing models whose early access is indicated by a future deadline rather than the availability field
+- Fixed the Prompt Amplifier showing **0 amplifications remaining** after every amplify — the app now reads the balance under the name the server actually returns
+- Fixed the **CivArchive browser** returning far fewer results than the CivArchive website — the site's redesign quietly pinned the app's search route to the past quarter, and the renamed result-count field capped infinite scroll at a single page
+- Fixed clicking some CivArchive results showing an error instead of the model — the redesign added whole-model search results whose detail pages load through a redirect the app didn't follow
+- Fixed CivArchive file results opening in the web browser instead of the in-app details page, and the details page's version dropdown doing nothing — both casualties of a renamed field in the redesigned API
+- CivArchive cards without a preview (whole-model and file results) now backfill an image from the model's gallery in the background instead of staying gray placeholders
+- Fixed trigger words being cut off on the CivArchive details page — entries that are whole prompt lines now wrap
+- CivArchive article results, which have no in-app page, now open in the web browser instead of erroring
+- Fixed OneTrainer's **Windows ROCm** bitsandbytes 8-bit optimizers, disabled in the last release ([#1708](https://github.com/LykosAI/StabilityMatrix/issues/1708)) — a wheel pinned to match OneTrainer's own bitsandbytes 0.49.1 requirement replaces the incompatible 0.50 build, so 8-bit optimizers work again - thanks to @0xDELUXA!
+>>>>>>> 065eba01 (Merge pull request #1393 from ionite34/fix/wan2gp-gradio-error-class)
 - Installing a package into a folder that already contains files — like an existing ComfyUI installation placed in `Data\Packages` to be imported — now shows the folder's total size and file count and requires explicit confirmation, instead of silently deleting everything in it; this includes the first-run one-click installer ([#1733](https://github.com/LykosAI/StabilityMatrix/issues/1733))
 - Turning off shared model folders no longer tries to delete real directories at the link locations — only links created by Stability Matrix are removed, so the model folders of an imported package are never touched ([#1733](https://github.com/LykosAI/StabilityMatrix/issues/1733))
 - The package uninstall confirmation now correctly lists models/checkpoints among the items that will be deleted for packages using config-based model sharing (ComfyUI's default) — previously it implied they were safe — and shows the package folder's total size
