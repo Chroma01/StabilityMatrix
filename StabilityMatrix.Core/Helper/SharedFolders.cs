@@ -77,6 +77,26 @@ public class SharedFolders(ISettingsManager settingsManager, IPackageFactory pac
             await destAsFile.DeleteAsync().ConfigureAwait(false);
         }
 
+        // A link placed inside its own target (e.g. the user already linked the destination's
+        // parent to the source) would loop forever for anything that walks the tree
+        if (LinkSafeFileSystem.WouldLinkCycle(sourceDir, destinationDir))
+        {
+            Logger.Warn(
+                "Skipped folder link {Destination} -> {Source}: the link would sit inside its own target",
+                destinationDir,
+                sourceDir
+            );
+
+            if (destinationDir.IsSymbolicLink)
+            {
+                Logger.Info("Removing existing looping link at {Destination}", destinationDir);
+                destinationDir.Info.Attributes = FileAttributes.Normal;
+                await destinationDir.DeleteAsync(false).ConfigureAwait(false);
+            }
+
+            return;
+        }
+
         if (destinationDir.Exists)
         {
             // Existing dest is a link
@@ -181,13 +201,25 @@ public class SharedFolders(ISettingsManager settingsManager, IPackageFactory pac
         {
             foreach (var relativePath in relativePaths)
             {
-                var destination = Path.GetFullPath(Path.Combine(installPath, relativePath));
-                // Delete the destination folder if it exists
-                if (!Directory.Exists(destination))
+                var destination = new DirectoryPath(
+                    Path.GetFullPath(Path.Combine(installPath, relativePath))
+                );
+                if (!destination.Exists)
                     continue;
 
-                Logger.Info($"Deleting junction target {destination}");
-                Directory.Delete(destination, false);
+                // Only remove links we created — never delete a real directory here,
+                // it may be user data (e.g. the models folder of an imported package)
+                if (!destination.IsSymbolicLink)
+                {
+                    Logger.Warn(
+                        "Skipped removing shared folder link at {Path}: not a symbolic link / junction",
+                        destination.FullPath
+                    );
+                    continue;
+                }
+
+                Logger.Info("Removing shared folder link at {Path}", destination.FullPath);
+                destination.Delete(false);
             }
         }
     }
